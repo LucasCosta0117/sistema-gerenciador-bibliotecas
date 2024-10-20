@@ -357,36 +357,58 @@ def _buscaUsuario():
 def _livrosCadastrados():
     os.system('clear')
     print("*** RELATÓRIO: LIVROS CADASTRADOS  ***")
+    
     if livros:
+        # Variável para armazenar soma do total de cópias
+        total_copias = 0
+        
         # Percorre a lista de livros
         for indice, livro in enumerate(livros):
-            print(f'{indice +1}.: {livro.titulo} - {livro.autor} ({livro.ano}) | Número de Cópias: {livro.copias}')
+            print(f'{indice + 1}.: {livro.titulo} - {livro.autor} ({livro.ano}) | Número de Cópias: {livro.copias}')
+            total_copias += livro.copias # Acumula a quantidade de cópias de cada livro
+        
+        total_titulos = len(livros) # Obtem o total de títulos cadastrados
+        print("-------------------------------------------------------")
+        print(f"Total de títulos cadastrados: {total_titulos}")
+        print(f"Total de unidades disponíveis: {total_copias}")
     else:
         print("Nenhum livro cadastrado no momento!")
-        
+    
     input('\nPressione [Enter] para retornar ao Menu de Relatórios')
     obterRelatorios()
+
 
 # Método auxiliar que retorna apenas os livros disponíveis para empréstimo
 def _livrosDisponiveis():
     os.system('clear')
     print("*** RELATÓRIO: LIVROS DISPONÍVEIS  ***")
-    # lista para armazenar os livros com cópias disponíveis
-    livros_disponiveis = []
+    
+    livros_disponiveis = [] # Variável para armazenar os livros disponíveis para empréstimo
+    total_copias_disponiveis = 0 # Variável para armazenar soma do total de cópias disponíveis
+    
     # Percorre a lista de livros
     for livro in livros:
         if livro.copias > 0:
             livros_disponiveis.append(livro)
+            total_copias_disponiveis += livro.copias # Acumula a quantidade de cópias disponíveis
 
     # Exibe a lista de livros disponíveis para empréstimo
     if livros_disponiveis:
         for indice, livro in enumerate(livros_disponiveis):
-            print(f'{indice +1}.: {livro.titulo} - {livro.autor} ({livro.ano}) | {livro.copias} cópias disponíveis')
+            print(f'{indice + 1}.: {livro.titulo} - {livro.autor} ({livro.ano}) | {livro.copias} cópias disponíveis')
+
+        # Exibe o total de títulos e o total de cópias disponíveis
+        total_titulos_disponiveis = len(livros_disponiveis)
+        print("-------------------------------------------------------")
+        print(f"Total de títulos disponíveis para empréstimo: {total_titulos_disponiveis}")
+        print(f"Total de cópias disponíveis para empréstimo: {total_copias_disponiveis}")
+    
     else:
         print("Nenhum livro disponível para empréstimo no momento!")
         
     input('\nPressione [Enter] para retornar ao Menu de Relatórios')
     obterRelatorios()
+
 
 
 # Método auxiliar que retorna apenas os livros disponíveis para empréstimo
@@ -395,24 +417,39 @@ def _livrosEmprestados():
     print("*** RELATÓRIO: LIVROS SOB EMPRÉSTIMO  ***")
     # lista para armazenar os livros emprestados
     livros_emprestados = []
-    # Cria um conjunto set() para garantir que não haja duplicatas
-    livros_unicos = set()
+    # Variável para armazenar o total de cópias emprestadas
+    total_copias_emprestadas = 0
+    # Armazena o número de cópias emprestadas por livro
+    contador_copias = {}
 
     # Percorre a lista de empréstimos
     for emprestimo in emprestimos:
         livro = emprestimo['livro']  # Acessa o livro no dicionário do empréstimo
         # Cria uma "chave" única com as informações do livro (título, autor, ano), pois o atributo 'copias' pode variar
         chave_livro = (livro.titulo, livro.autor, livro.ano)
-
-        # Se a chave não estiver no conjunto de livros únicos, adiciona o livro
-        if chave_livro not in livros_unicos:
-            livros_emprestados.append(livro)
-            livros_unicos.add(chave_livro)
+        
+        # Acumula o número de cópias emprestadas
+        total_copias_emprestadas += 1
+        
+        # Verifica se o livro já foi adicionado ao contador, senão inicializa com 1
+        if chave_livro in contador_copias:
+            contador_copias[chave_livro] += 1 # Acrescenta 1 un ao contador ao encontrar o livro
+        else:
+            contador_copias[chave_livro] = 1 # Inicia o contador
+            livros_emprestados.append(livro) # Adicoina o livro à lista de livros emprestados
 
     # Exibe a lista de livros emprestados
     if livros_emprestados:
         for indice, livro in enumerate(livros_emprestados):
-            print(f'{indice +1}.: {livro.titulo} - {livro.autor} ({livro.ano})')
+            chave_livro = (livro.titulo, livro.autor, livro.ano)
+            numero_copias = contador_copias[chave_livro]  # Obtém o número de cópias emprestadas para esse livro
+            print(f'{indice +1}.: {livro.titulo} - {livro.autor} ({livro.ano}) | Cópias emprestadas: {numero_copias}')
+        
+        # Exibe o total de títulos emprestados e cópias emprestadas
+        total_titulos_emprestados = len(livros_emprestados)
+        print("-------------------------------------------------------")
+        print(f"Total de títulos emprestados: {total_titulos_emprestados}")
+        print(f"Total de cópias emprestadas: {total_copias_emprestadas}")
     else:
         print("Nenhum livro está emprestado no momento.")
         
@@ -427,6 +464,10 @@ def _usuariosCadastrados():
         # Percorre a lista de livros
         for indice, usuario in enumerate(usuarios):
             print(f'{indice +1}.: {usuario.nome}  | ID: {usuario.identificacao} | Contato: {usuario.contato}')
+        
+        total_usuarios = len(usuarios) # Obtem o total de usuários cadastrados
+        print("-------------------------------------------------------")
+        print(f"Total de usuários cadastrados: {total_usuarios}")
     else:
         print("Nenhum usuário cadastrado no momento!")
         
@@ -457,13 +498,17 @@ def _usuariosComEmprestimo():
     if usuarios_com_emprestimos:
         for indice, usuario in enumerate(usuarios_com_emprestimos):
             print(f'{indice +1}.: {usuario.nome}  | ID: {usuario.identificacao} | Contato: {usuario.contato}')
+            
+        total_usuarios_com_emprestimos = len(usuarios_com_emprestimos) # Obtem o total de usuários cadastrados
+        print("-------------------------------------------------------")
+        print(f"Total de usuários com empréstimos ativos: {total_usuarios_com_emprestimos}")
     else:
         print("Nenhum usuário possui empréstimos ativos.")
         
     input('\nPressione [Enter] para retornar ao Menu de Relatórios')
     obterRelatorios()
 
-# Popula as variáveis livros e usuários para facilitar o uso inicial do programa
+# Popula as variáveis 'livros' e 'usuarios' para facilitar o uso inicial do programa
 livros = [
     Livro("O Senhor dos Anéis", "J.R.R. Tolkien", '1954', 0),
     Livro("O Senhor dos Anéis II", "J.R.R. Tolkien", '1997', 5),
