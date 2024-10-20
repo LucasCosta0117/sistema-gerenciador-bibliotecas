@@ -1,4 +1,5 @@
 class Livro:
+    # Método construtor e atributos associados à classe
     def __init__(self, titulo: str, autor: str, ano: str, copias: int):
         self.titulo = titulo
         self.autor = autor

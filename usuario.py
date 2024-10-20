@@ -1,5 +1,6 @@
 
 class Usuario:
+    # Método construtor e atributos associados à classe
     def __init__(self, nome: str, identificacao: str, contato: str):
         self.nome = nome
         self.identificacao = identificacao
