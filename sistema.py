@@ -94,24 +94,35 @@ class SistemaBiblioteca:
         # Recebe os valores do título, autor e ano de publicação do livro
         titulo = input('Título do Livro: ')
         autor = input('Autor do Livro: ')
-        ano = input('Ano de Publicação: ')     
+        ano = None
+        try:
+            # Solicita o input e tenta converter para inteiro
+            ano = int(input('Ano de Publicação: '))
+            
+            # Verifica se o valor é positivo
+            if ano <= 0:
+                raise Exception # Lança uma exceção genérica e trata o erro no 'except'
+        except Exception:
+            # Trata os erros em casos de o input não ser um número inteiro positivo
+            print("Entrada inválida! Ano de Publicação deve ser um número inteiro positivo!")
+            input("Cadastro cancelado. Pressione [Enter] para retornar ao Menu Principal")
+            os.system('clear')
+            self.menuPrincipal()
         
-        # Tratativa para validar o valor da variável 'copias', pois, irei operar matematicamente com ela em outros métodos
         copias = None
-        while True:
-            try:
-                # Solicita o input e tenta converter para inteiro
-                copias = int(input('Número de Cópias: '))
-                
-                # Verifica se o valor é positivo
-                if copias < 0:
-                    print("Insira um Número de Cópias inteiro!")
-                else:
-                    # Se for um valor válido, sai do loop
-                    break
-            except ValueError:
-                # Trata o caso de o input não ser um número inteiro
-                print("Entrada inválida! Por favor, insira um número inteiro válido.")
+        try:
+            # Solicita o input e tenta converter para inteiro
+            copias = int(input('Número de Cópias: '))
+            
+            # Verifica se o valor é positivo
+            if copias < 0:
+                raise Exception # Lança uma exceção genérica e trata o erro no 'except'
+        except Exception:
+            # Trata o caso de o input não ser um número inteiro
+            print("Entrada inválida! Número de Cópias deve ser um número inteiro e não negativo!")
+            input("Cadastro cancelado. Pressione [Enter] para retornar ao Menu Principal")
+            os.system('clear')
+            self.menuPrincipal()
         
         # Cria uma instância do objeto Livro
         livro = Livro(titulo, autor, ano, copias)
@@ -119,7 +130,7 @@ class SistemaBiblioteca:
         self.livros.append(livro)
         
         print("-----------------------------------------------------------------------")
-        input("LIVRO cadastrado com Sucesso! (Pressione 'Enter' para retornar ao Menu Principal)")
+        input("LIVRO cadastrado com Sucesso! (Pressione [Enter] para retornar ao Menu Principal)")
         os.system('clear')
         self.menuPrincipal()
     
@@ -130,28 +141,44 @@ class SistemaBiblioteca:
         
         # Recebe os valores do nome e contato do usuário
         nome = input('Nome do usuário: ')
-        contato = input('Telefone para contato: ') # OBS: O código está simplificado e não verifica se é um Telefone válido
         
-        # Tratativa para validar o input da variável 'identificacao'
-        id = None
-        while True:
-            id = input('Número de identificação: ') # Recebe o valor do identificador.
+        id = None # OBS: Este código está simplificado, não valida o número de identificação (num de dígitos, início com Zero e etc)
+        try:
+            # Solicita o input e tenta converter para inteiro, pois o id não deve conter 'strings'
+            id = int(input('Número de identificação (CPF): '))
             
-            id_unico = False
-            for usuario in self.usuarios:
-                # Verifica se existe algum usuário com o mesmo número de identificação digitado
-                if usuario.identificacao == id:
-                    print(f'Já existe um(a) usuário(a) ({usuario.nome}) com esta mesma identificação!')
-                    print('Tentar novamente? Sim [Enter] | Não [n]')
-                    resposta = input()
-                    if resposta == 'n' or resposta == 'N':
+            # Verifica se o valor é positivo
+            if id <= 0:
+                raise Exception # Lança uma exceção genérica e trata o erro no 'except'
+            # Caso existam outros usuários cadastrados, é preciso garantir que o id fornecido seja único
+            if self.usuarios:
+                for usuario in self.usuarios:
+                    # Verifica se existe algum usuário com o mesmo número de identificação digitado
+                    if usuario.identificacao == id:
+                        print(f'Já existe um(a) usuário(a) ({usuario.nome}) com esta mesma identificação!')
+                        input("Cadastro cancelado. Pressione [Enter] para retornar ao Menu Principal")
                         os.system('clear')
                         self.menuPrincipal()
-                    id_unico = True
-                    break
-            if not id_unico:
-                # Se nenhum usuário foi encontrado, o loop termina e o número de identificação é considerado único
-                break 
+        except Exception:
+            # Trata o caso de o input não ser um número inteiro
+            print("Entrada inválida! Número de Identificação (CPF) deve ser um número inteiro positivo!")
+            input("Cadastro cancelado. Pressione [Enter] para retornar ao Menu Principal")
+            os.system('clear')
+            self.menuPrincipal()
+        
+        contato = None # OBS: Este código está simplificado, não valida o número de Telefone (num de dígitos, formato e etc)
+        try:
+            # Solicita o input e tenta converter para inteiro, pois o contato não deve conter 'strings'
+            contato = int(input('Telefone para contato: '))
+            # Verifica se o valor é positivo
+            if contato <= 0:
+                raise Exception # Lança uma exceção genérica e trata o erro no 'except'
+        except Exception:
+            # Trata o caso de o input não ser um número inteiro
+            print("Entrada inválida! Telefone para contato deve ser um número inteiro positivo!")
+            input("Cadastro cancelado. Pressione [Enter] para retornar ao Menu Principal")
+            os.system('clear')
+            self.menuPrincipal()
         
         # Cria uma instância do objeto Usuario
         usuario = Usuario(nome, id, contato)
@@ -159,7 +186,7 @@ class SistemaBiblioteca:
         self.usuarios.append(usuario)
         
         print("-----------------------------------------------------------------------")
-        input("USUÁRIO cadastrado com Sucesso! (Pressione 'Enter' para retornar ao Menu Principal)")
+        input("USUÁRIO cadastrado com Sucesso! (Pressione [Enter] para retornar ao Menu Principal)")
         os.system('clear')
         self.menuPrincipal()
 
@@ -180,17 +207,15 @@ class SistemaBiblioteca:
             try:
                 usuarioIndice = int(input("\nDigite o NÚMERO correspondente ao USUÁRIO que fará o empréstimo: "))
                 usuarioIndice = usuarioIndice -1 # Necessário fazer esse ajuste pois os indices de uma lista sempre iniciam em 0
-                # Verifica se o índice está dentro do intervalo válido
-                if (0 <= usuarioIndice < len(usuarios_encontrados)):
-                    usuario_selecionado = usuarios_encontrados[usuarioIndice]
-                else:
-                    # Tratativa de erro para caso o usuário escolha um número fora das opções fornecidas
-                    input("Entrada inválida! (Pressione 'Enter' para retornar ao Menu Principal)")
-                    os.system('clear')
-                    self.menuPrincipal()
-            except ValueError:
+                
+                # Verifica se o índice está fora do intervalo válido
+                if (0 >= usuarioIndice > len(usuarios_encontrados)):
+                    raise Exception
+                
+                usuario_selecionado = usuarios_encontrados[usuarioIndice]
+            except Exception:
                 # Tratativa de erro para caso o usuário digite uma opção que não seja um número inteiro
-                input("Entrada inválida! (Pressione 'Enter' para retornar ao Menu Principal)")
+                input("Entrada inválida! (Pressione [Enter] para retornar ao Menu Principal)")
                 os.system('clear')
                 self.menuPrincipal()
 
@@ -204,40 +229,38 @@ class SistemaBiblioteca:
                 try:
                     livroIndice = int(input("Digite o NÚMERO correspondente ao LIVRO que será EMPRESTADO: "))
                     livroIndice = livroIndice -1 # Necessário fazer esse ajuste pois os indices de uma lista sempre iniciam em 0
-                    # Verifica se o índice está dentro do intervalo válido
-                    if (0 <= livroIndice < len(livros_encontrados)):
-                        livro_selecionado = livros_encontrados[livroIndice]
+                    
+                    # Verifica se o índice está fora do intervalo válido
+                    if (0 >= livroIndice > len(livros_encontrados)):
+                        raise Exception
+                    
+                    livro_selecionado = livros_encontrados[livroIndice]
+                    
+                    # Verificar a disponibilidade do livro antes de confirmar o empréstimo.
+                    if livro_selecionado.copias == 0:
+                        input("O LIVRO escolhido NÃO POSSUE uma cópia disponível no momento\n(Pressione [Enter] para retornar ao Menu Principal)")
+                        os.system('clear')
+                        self.menuPrincipal()
                         
-                        # Verificar a disponibilidade do livro antes de confirmar o empréstimo.
-                        if livro_selecionado.copias == 0:
-                            input("O LIVRO escolhido NÃO POSSUE uma cópia disponível no momento\n(Pressione 'Enter' para retornar ao Menu Principal)")
-                            os.system('clear')
-                            self.menuPrincipal()
+                    # Encontra na lista geral de livros a instância do livro selecionado no emprestimo
+                    for livro in self.livros:
+                        if livro == livro_selecionado:
+                            livro.copias -= 1  # Atualizar o número de cópias disponíveis após o empréstimo
+                            print(f"\nEmpréstimo realizado com sucesso para {usuario_selecionado.nome}!")
+                            print(f"Número de Cópias atualizadas: {livro.copias}un disponíveis para o livro '{livro.titulo}'")
                             
-                        # Encontra na lista geral de livros a instância do livro selecionado no emprestimo
-                        for livro in self.livros:
-                            if livro == livro_selecionado:
-                                livro.copias -= 1  # Atualizar o número de cópias disponíveis após o empréstimo
-                                print(f"\nEmpréstimo realizado com sucesso para {usuario_selecionado.nome}!")
-                                print(f"Número de Cópias atualizadas: {livro.copias}un disponíveis para o livro '{livro.titulo}'")
-                                
-                                self.emprestimos.append({'usuario': usuario_selecionado, 'livro': livro}) # Atualiza a lista de empréstismos, adicionando o Usuário e Livro selecionado
-                                break
+                            self.emprestimos.append({'usuario': usuario_selecionado, 'livro': livro}) # Atualiza a lista de empréstismos, adicionando o Usuário e Livro selecionado
+                            break
+                    
+                    # Finaliza o procedimento de empréstimo e redireciona para o Menu Principal   
+                    print("---------------------------------------------------")
+                    input("Pressione [Enter] para retornar ao Menu Principal")
+                    os.system('clear')
+                    self.menuPrincipal()
                         
-                        # Finaliza o procedimento de empréstimo e redireciona para o Menu Principal   
-                        print("---------------------------------------------------")
-                        input("Pressione 'Enter' para retornar ao Menu Principal")
-                        os.system('clear')
-                        self.menuPrincipal()
-                    else:
-                        # Tratativa de erro para caso o usuário escolha um número fora das opções fornecidas
-                        input("Entrada inválida! (Pressione 'Enter' para retornar ao Menu Principal)")
-                        os.system('clear')
-                        self.menuPrincipal()
-                        
-                except ValueError:
+                except Exception:
                     # Tratativa de erro para caso o usuário digite uma opção que não seja um número inteiro
-                    input("Entrada inválida! (Pressione 'Enter' para retornar ao Menu Principal)")
+                    input("Entrada inválida! (Pressione [Enter] para retornar ao Menu Principal)")
                     os.system('clear')
                     self.menuPrincipal()
 
@@ -253,27 +276,31 @@ class SistemaBiblioteca:
         emprestimo_selecionado = None
         livros_emprestados = []  # Lista para armazenar os livros encontrados
         
-        # Percorre a lista de empréstimos para buscar pelos empréstimos do usuário digitado
-        for emprestimo in self.emprestimos:
-            # Verifica se a identificação do usuário no dicionário é igual ao 'usuarioId'
-            if emprestimo['usuario'].identificacao == usuarioId:
-                # Adiciona o livro correspondente à lista de livros emprestados, salva o usuário e o empréstimo correspondente
-                livros_emprestados.append(emprestimo['livro'])
-                usuario_selecionado = emprestimo['usuario']
-                emprestimo_selecionado = emprestimo
-                
-        # Informa todos os livros que estãp emprestados para aquele usuário
-        if livros_emprestados:
-            print(f"Livros emprestados em nome de {usuario_selecionado.nome} (id: {usuarioId}): ")
-            for indice, livro in enumerate(livros_emprestados):
-                print(f"[{indice +1}] {livro.titulo} - {livro.autor} - {livro.ano}")
-                
-            livroIndice = int(input("Digite o NÚMERO correspondente ao LIVRO que será DEVOLVIDO: "))
-            livroIndice = livroIndice -1 # Necessário fazer esse ajuste pois os indices de uma lista sempre iniciam em 0
-            # Verifica se o índice está dentro do intervalo válido
-            if (0 <= livroIndice < len(livros_emprestados)):
-                livro_selecionado = livros_emprestados[livroIndice]
+        try:
+            # Percorre a lista de empréstimos para buscar pelos empréstimos do usuário digitado
+            for emprestimo in self.emprestimos:
+                # Verifica se a identificação do usuário no dicionário é igual ao 'usuarioId'
+                if emprestimo['usuario'].identificacao == usuarioId:
+                    # Adiciona o livro correspondente à lista de livros emprestados, salva o usuário e o empréstimo correspondente
+                    livros_emprestados.append(emprestimo['livro'])
+                    usuario_selecionado = emprestimo['usuario']
+                    emprestimo_selecionado = emprestimo
                     
+            # Informa todos os livros que estão emprestados para aquele usuário
+            if livros_emprestados:
+                print(f"Livros emprestados em nome de {usuario_selecionado.nome} (id: {usuarioId}): ")
+                for indice, livro in enumerate(livros_emprestados):
+                    print(f"[{indice +1}] {livro.titulo} - {livro.autor} - {livro.ano}")
+                    
+                livroIndice = int(input("Digite o NÚMERO correspondente ao LIVRO que será DEVOLVIDO: "))
+                livroIndice = livroIndice -1 # Necessário fazer esse ajuste pois os indices de uma lista sempre iniciam em 0
+                
+                # Verifica se o índice está fora do intervalo válido
+                if (0 >= livroIndice > len(livros_emprestados)):
+                    raise Exception
+                
+                livro_selecionado = livros_emprestados[livroIndice]
+                        
                 # Encontra na lista geral de livros a instância do livro selecionado na devolução
                 for livro in self.livros:
                     if livro == livro_selecionado:
@@ -286,17 +313,16 @@ class SistemaBiblioteca:
                 
                 # Finaliza o procedimento de devolução e redireciona para o Menu Principal   
                 print("---------------------------------------------------")
-                input("Pressione 'Enter' para retornar ao Menu Principal")
+                input("Pressione [Enter] para retornar ao Menu Principal")
                 os.system('clear')
                 self.menuPrincipal()
             else:
-                # Tratativa de erro para caso o usuário escolha um número fora das opções fornecidas
-                input("Entrada inválida! (Pressione 'Enter' para retornar ao Menu Principal)")
+                print(f"Nenhum livro encontrado para o usuário com ID {usuarioId}.")
+                input("Pressione [Enter] para retornar ao Menu Principal")
                 os.system('clear')
                 self.menuPrincipal()
-        else:
-            print(f"Nenhum livro encontrado para o usuário com ID {usuarioId}.")
-            input("Pressione 'Enter' para retornar ao Menu Principal")
+        except Exception:
+            input("Entrada inválida! (Pressione [Enter] para retornar ao Menu Principal)")
             os.system('clear')
             self.menuPrincipal()
 
@@ -315,7 +341,7 @@ class SistemaBiblioteca:
             print('Nenhum livro encontrado')
             
         print("---------------------------------------------------")
-        input("Pressione 'Enter' para retornar ao Menu Principal")
+        input("Pressione [Enter] para retornar ao Menu Principal")
         os.system('clear')
         self.menuPrincipal()
 
@@ -334,7 +360,7 @@ class SistemaBiblioteca:
             print('Nenhum usuário encontrado')
             
         print("---------------------------------------------------")
-        input("Pressione 'Enter' para retornar ao Menu Principal")
+        input("Pressione [Enter] para retornar ao Menu Principal")
         os.system('clear')
         self.menuPrincipal()
         

@@ -1,6 +1,6 @@
 class Livro:
     # Método construtor e atributos associados à classe
-    def __init__(self, titulo: str, autor: str, ano: str, copias: int):
+    def __init__(self, titulo: str, autor: str, ano: int, copias: int):
         self.titulo = titulo
         self.autor = autor
         self.ano = ano
@@ -17,7 +17,7 @@ class Livro:
         if isinstance(titulo, str):
             self._titulo = titulo
         else:
-            raise ValueError("O título deve ser um texto (string)!")
+            raise ValueError("O titulo deve ser um texto (string)!")
 
     # Getter para o autor
     @property
@@ -34,16 +34,16 @@ class Livro:
 
     # Getter para o ano de publicação
     @property
-    def ano(self) -> str:
+    def ano(self) -> int:
         return self._ano
 
     # Setter para o ano de publicação
     @ano.setter
-    def ano(self, ano: str):
-        if isinstance(ano, str):
+    def ano(self, ano: int):
+        if isinstance(ano, int) and ano >= 0:
             self._ano = ano
         else:
-            raise ValueError("O ano deve ser um texto (string)!")
+            raise ValueError("O ano deve ser um inteiro positivo (int)!")
 
     # Getter para o número de cópias disponíveis
     @property
@@ -56,4 +56,4 @@ class Livro:
         if isinstance(qtd, int) and qtd >= 0:
             self._copias = qtd
         else:
-            raise ValueError("O número de cópias deve ser um número inteiro!")
+            raise ValueError("O valor de copias deve ser um inteiro positivo (int)!")
