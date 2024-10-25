@@ -2,6 +2,7 @@
 from livro import Livro
 from usuario import Usuario
 import os
+import platform
 
 class SistemaBiblioteca:
     # Método construtor e atributos associados à classe
@@ -82,13 +83,13 @@ class SistemaBiblioteca:
             elif menuP == '7':
                 return self.obterRelatorios()
             
-        os.system('clear')
+        self._limparTela()
         print('*********************  FIM  ********************')
         print('OBRIGADO POR USAR NOSSO SISTEMA DE GERENCIAMENTO')
         
     # Método usado para cadastrar um novo livro no sistema
     def cadastrarLivro(self):
-        os.system('clear')
+        self._limparTela()
         print("*****  CADASTRO DE LIVROS  *****")
 
         # Recebe os valores do título, autor e ano de publicação do livro
@@ -106,7 +107,7 @@ class SistemaBiblioteca:
             # Trata os erros em casos de o input não ser um número inteiro positivo
             print("Entrada inválida! Ano de Publicação deve ser um número inteiro positivo!")
             input("Cadastro cancelado. Pressione [Enter] para retornar ao Menu Principal")
-            os.system('clear')
+            self._limparTela()
             self.menuPrincipal()
         
         copias = None
@@ -121,7 +122,7 @@ class SistemaBiblioteca:
             # Trata o caso de o input não ser um número inteiro
             print("Entrada inválida! Número de Cópias deve ser um número inteiro e não negativo!")
             input("Cadastro cancelado. Pressione [Enter] para retornar ao Menu Principal")
-            os.system('clear')
+            self._limparTela()
             self.menuPrincipal()
         
         # Cria uma instância do objeto Livro
@@ -131,12 +132,12 @@ class SistemaBiblioteca:
         
         print("-----------------------------------------------------------------------")
         input("LIVRO cadastrado com Sucesso! (Pressione [Enter] para retornar ao Menu Principal)")
-        os.system('clear')
+        self._limparTela()
         self.menuPrincipal()
     
     # Método usado para cadastrar um novo usuário no sistema   
     def cadastrarUsuário(self):
-        os.system('clear')
+        self._limparTela()
         print("*****  CADASTRO DE USUÁRIOS  *****")
         
         # Recebe os valores do nome e contato do usuário
@@ -157,13 +158,13 @@ class SistemaBiblioteca:
                     if usuario.identificacao == id:
                         print(f'Já existe um(a) usuário(a) ({usuario.nome}) com esta mesma identificação!')
                         input("Cadastro cancelado. Pressione [Enter] para retornar ao Menu Principal")
-                        os.system('clear')
+                        self._limparTela()
                         self.menuPrincipal()
         except Exception:
             # Trata o caso de o input não ser um número inteiro
             print("Entrada inválida! Número de Identificação (CPF) deve ser um número inteiro positivo!")
             input("Cadastro cancelado. Pressione [Enter] para retornar ao Menu Principal")
-            os.system('clear')
+            self._limparTela()
             self.menuPrincipal()
         
         contato = None # OBS: Este código está simplificado, não valida o número de Telefone (num de dígitos, formato e etc)
@@ -177,7 +178,7 @@ class SistemaBiblioteca:
             # Trata o caso de o input não ser um número inteiro
             print("Entrada inválida! Telefone para contato deve ser um número inteiro positivo!")
             input("Cadastro cancelado. Pressione [Enter] para retornar ao Menu Principal")
-            os.system('clear')
+            self._limparTela()
             self.menuPrincipal()
         
         # Cria uma instância do objeto Usuario
@@ -187,12 +188,12 @@ class SistemaBiblioteca:
         
         print("-----------------------------------------------------------------------")
         input("USUÁRIO cadastrado com Sucesso! (Pressione [Enter] para retornar ao Menu Principal)")
-        os.system('clear')
+        self._limparTela()
         self.menuPrincipal()
 
     # Método para realizar um empréstimo de um Livro a um Usuário
     def fazerEmprestimo(self):
-        os.system('clear')
+        self._limparTela()
         print("*****  EMPRESTIMO DE LIVROS  *****")
         usuario_selecionado = None
         livro_selecionado = None
@@ -216,7 +217,7 @@ class SistemaBiblioteca:
             except Exception:
                 # Tratativa de erro para caso o usuário digite uma opção que não seja um número inteiro
                 input("Entrada inválida! (Pressione [Enter] para retornar ao Menu Principal)")
-                os.system('clear')
+                self._limparTela()
                 self.menuPrincipal()
 
             print("\n** ESCOLHA O LIVRO A SER EMPRESTADO **")
@@ -239,7 +240,7 @@ class SistemaBiblioteca:
                     # Verificar a disponibilidade do livro antes de confirmar o empréstimo.
                     if livro_selecionado.copias == 0:
                         input("O LIVRO escolhido NÃO POSSUE uma cópia disponível no momento\n(Pressione [Enter] para retornar ao Menu Principal)")
-                        os.system('clear')
+                        self._limparTela()
                         self.menuPrincipal()
                         
                     # Encontra na lista geral de livros a instância do livro selecionado no emprestimo
@@ -255,18 +256,18 @@ class SistemaBiblioteca:
                     # Finaliza o procedimento de empréstimo e redireciona para o Menu Principal   
                     print("---------------------------------------------------")
                     input("Pressione [Enter] para retornar ao Menu Principal")
-                    os.system('clear')
+                    self._limparTela()
                     self.menuPrincipal()
                         
                 except Exception:
                     # Tratativa de erro para caso o usuário digite uma opção que não seja um número inteiro
                     input("Entrada inválida! (Pressione [Enter] para retornar ao Menu Principal)")
-                    os.system('clear')
+                    self._limparTela()
                     self.menuPrincipal()
 
     # Método para realizar a devolução de um Livro feita por um Usuário
     def fazerDevolucao(self):
-        os.system('clear')
+        self._limparTela()
         print("*****  DEVOLUÇÃO DE LIVROS  *****")
         print("\n** ESCOLHA O USUÁRIO RESPONSÁVEL PELA DEVOLUÇÃO **")
         usuarioId = input('Digite o Número de Identificação do Usuário: ')
@@ -314,21 +315,21 @@ class SistemaBiblioteca:
                 # Finaliza o procedimento de devolução e redireciona para o Menu Principal   
                 print("---------------------------------------------------")
                 input("Pressione [Enter] para retornar ao Menu Principal")
-                os.system('clear')
+                self._limparTela()
                 self.menuPrincipal()
             else:
                 print(f"Nenhum livro encontrado para o usuário com ID {usuarioId}.")
                 input("Pressione [Enter] para retornar ao Menu Principal")
-                os.system('clear')
+                self._limparTela()
                 self.menuPrincipal()
         except Exception:
             input("Entrada inválida! (Pressione [Enter] para retornar ao Menu Principal)")
-            os.system('clear')
+            self._limparTela()
             self.menuPrincipal()
 
     # Método para consultar um ou todos livros cadastrados no sistema
     def consultarLivros(self):
-        os.system('clear')
+        self._limparTela()
         print("*****  CONSULTA DE LIVROS  *****")
         
         livros_encontrados = self._buscaLivro() # Realiza uma busca na lista completa de livros
@@ -342,12 +343,12 @@ class SistemaBiblioteca:
             
         print("---------------------------------------------------")
         input("Pressione [Enter] para retornar ao Menu Principal")
-        os.system('clear')
+        self._limparTela()
         self.menuPrincipal()
 
     # Método para consultar um ou todos usuários cadastrados no sistema
     def consultarUsuarios(self):
-        os.system('clear')
+        self._limparTela()
         print("*****  CONSULTA DE USUÁRIOS  *****")
         
         usuarios_encontrados = self._buscaUsuario() # Realiza uma busca na lista completa de usuário
@@ -361,12 +362,12 @@ class SistemaBiblioteca:
             
         print("---------------------------------------------------")
         input("Pressione [Enter] para retornar ao Menu Principal")
-        os.system('clear')
+        self._limparTela()
         self.menuPrincipal()
         
     # Método responsável por gerar os relatórios do sistema
     def obterRelatorios(self):
-        os.system('clear')
+        self._limparTela()
         print("********* GERAR RELATÓRIOS  ********")
         print('[1] Livros Cadastrados')
         print('[2] Livros Disponíveis')
@@ -391,7 +392,7 @@ class SistemaBiblioteca:
             elif menuR == '5':
                 return self._usuariosComEmprestimo()
         
-        os.system('clear')
+        self._limparTela()
         self.menuPrincipal()
         
     # Método auxiliar que retorna a lista filtrada de livros. Criada para garantir a modularização de código
@@ -422,7 +423,7 @@ class SistemaBiblioteca:
 
     # Método auxiliar que retorna apenas os livros totais cadastrados
     def _livrosCadastrados(self):
-        os.system('clear')
+        self._limparTela()
         print("*** RELATÓRIO: LIVROS CADASTRADOS  ***")
         
         if self.livros:
@@ -447,7 +448,7 @@ class SistemaBiblioteca:
 
     # Método auxiliar que retorna apenas os livros disponíveis para empréstimo
     def _livrosDisponiveis(self):
-        os.system('clear')
+        self._limparTela()
         print("*** RELATÓRIO: LIVROS DISPONÍVEIS  ***")
         
         livros_disponiveis = [] # Variável para armazenar os livros disponíveis para empréstimo
@@ -480,7 +481,7 @@ class SistemaBiblioteca:
 
     # Método auxiliar que retorna apenas os livros disponíveis para empréstimo
     def _livrosEmprestados(self):
-        os.system('clear')
+        self._limparTela()
         print("*** RELATÓRIO: LIVROS SOB EMPRÉSTIMO  ***")
         # lista para armazenar os livros emprestados
         livros_emprestados = []
@@ -525,7 +526,7 @@ class SistemaBiblioteca:
 
     # Método auxiliar que retorna apenas os livros disponíveis para empréstimo
     def _usuariosCadastrados(self):
-        os.system('clear')
+        self._limparTela()
         print("*** RELATÓRIO: USUÁRIOS CADASTRADOS ***")
         if self.usuarios:
             # Percorre a lista de livros
@@ -543,7 +544,7 @@ class SistemaBiblioteca:
 
     # Método auxiliar que retorna apenas os livros disponíveis para empréstimo
     def _usuariosComEmprestimo(self):
-        os.system('clear')
+        self._limparTela()
         print("*** RELATÓRIO: USUÁRIOS COM EMPRÉSTIMO ATIVO ***")
         # lista para armazenar os usuários com empréstimos ativos
         usuarios_com_emprestimos = []
@@ -574,3 +575,11 @@ class SistemaBiblioteca:
             
         input('\nPressione [Enter] para retornar ao Menu de Relatórios')
         self.obterRelatorios()
+     
+    # Método auxiliar para limpar a tela (terminal)
+    def _limparTela(self):
+        # Verifica o sistema para garantir o funcionamento do método
+        if platform.system() == "Windows":
+            os.system('cls')
+        else:
+            os.system('clear')
